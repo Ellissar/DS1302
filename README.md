@@ -6,8 +6,8 @@
 Я добавил несколько изменений:
 1. Добавил 3 новых функции:
 
-   //Запуск часов.
-   void DS1302_ClockStart(void);
+   //Запуск часов.  
+   void DS1302_ClockStart(void);  
    //Остановка часов.
    void DS1302_ClockStop(void);
 
