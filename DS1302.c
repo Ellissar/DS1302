@@ -1,22 +1,22 @@
-#include "DS1302.h"
+п»ї#include "DS1302.h"
 
 
-// Регистры DS1302
+// Р РµРіРёСЃС‚СЂС‹ DS1302
 #define DS1302_SEC				0x80
 #define DS1302_MIN				0x82
 #define DS1302_HOUR				0x84
 #define DS1302_DATE				0x86
-#define DS1302_MONTH			0x88
+#define DS1302_MONTH				0x88
 #define DS1302_DAY				0x8A
 #define DS1302_YEAR				0x8C
-#define DS1302_CONTROL			0x8E
-#define DS1302_CHARGER			0x90
-#define DS1302_CLKBURST			0xBE
-#define DS1302_RAMBURST 		0xFE
+#define DS1302_CONTROL				0x8E
+#define DS1302_CHARGER				0x90
+#define DS1302_CLKBURST				0xBE
+#define DS1302_RAMBURST 			0xFE
 
 
-#define RAMSIZE 				0x31	// Размер RAM в байтах
-#define DS1302_RAMSTART			0xC0 	// Первый адрес RAM
+#define RAMSIZE 				0x31	// Р Р°Р·РјРµСЂ RAM РІ Р±Р°Р№С‚Р°С…
+#define DS1302_RAMSTART				0xC0 	// РџРµСЂРІС‹Р№ Р°РґСЂРµСЃ RAM
 
 
 #define HEX2BCD(v)	((v) % 10 + (v) / 10 * 16)
@@ -47,7 +47,7 @@ static void readSDA(void) {
 }
 
 
-/* Отправка адреса или команды */
+/* РћС‚РїСЂР°РІРєР° Р°РґСЂРµСЃР° РёР»Рё РєРѕРјР°РЅРґС‹ */
 static void DS1302_SendCmd(uint8_t cmd) {
 	uint8_t i;
 	for (i = 0; i < 8; i ++) 
@@ -65,7 +65,7 @@ static void DS1302_SendCmd(uint8_t cmd) {
 }
 
 
-/* Прочитать байт по адресу 'addr' */
+/* РџСЂРѕС‡РёС‚Р°С‚СЊ Р±Р°Р№С‚ РїРѕ Р°РґСЂРµСЃСѓ 'addr' */
 static void DS1302_WriteByte(uint8_t addr, uint8_t d)
 {
 	uint8_t i;
@@ -74,7 +74,7 @@ static void DS1302_WriteByte(uint8_t addr, uint8_t d)
 	HAL_GPIO_WritePin(DS1302_GPIO, DS1302_RST,  GPIO_PIN_SET);	
 	
 	//addr = addr & 0xFE;
-	DS1302_SendCmd(addr);	// Отправка адреса
+	DS1302_SendCmd(addr);	// РћС‚РїСЂР°РІРєР° Р°РґСЂРµСЃР°
 	
 	for (i = 0; i < 8; i ++) 
 	{
@@ -101,7 +101,7 @@ static void DS1302_WriteBurst(uint8_t cmd, uint8_t len, uint8_t * temp)
 {
 	uint8_t i, j;
 	
-	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// Отключить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 
 	//	DS1302_RST = 1;
 	HAL_GPIO_WritePin(DS1302_GPIO, DS1302_RST,  GPIO_PIN_SET);	
@@ -128,7 +128,7 @@ static void DS1302_WriteBurst(uint8_t cmd, uint8_t len, uint8_t * temp)
 	//	DS1302_SDA = 0;
 	HAL_GPIO_WritePin(DS1302_GPIO, DS1302_SDA,  GPIO_PIN_RESET);
 	
-	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Включить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 }
 
 
@@ -210,7 +210,7 @@ static void DS1302_ReadBurst(uint8_t cmd, uint8_t len, uint8_t * temp)
 /* Writes time byte by byte from 'buf' */
 void DS1302_WriteTime(uint8_t *buf) 
 {	
-	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// Отключить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 	DS1302_WriteByte(DS1302_SEC, 0x80);
 	DS1302_WriteByte(DS1302_YEAR, HEX2BCD(buf[1]));
@@ -220,7 +220,7 @@ void DS1302_WriteTime(uint8_t *buf)
 	DS1302_WriteByte(DS1302_MIN, HEX2BCD(buf[5]));
 	DS1302_WriteByte(DS1302_SEC, HEX2BCD(buf[6]));
 	DS1302_WriteByte(DS1302_DAY, HEX2BCD(buf[7]));
-	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Включить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 }
 
@@ -247,10 +247,10 @@ void DS1302_ReadTime(uint8_t *buf)
 }
 
 
-/* Инициализация */
+/* РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ */
 void DS1302_Init(void)
 {
-	DWT_Delay_Init(); //Инициализация таймера для отсчета милисекунд
+	DWT_Delay_Init(); //РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С‚Р°Р№РјРµСЂР° РґР»СЏ РѕС‚СЃС‡РµС‚Р° РјРёР»РёСЃРµРєСѓРЅРґ
 
 	GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -259,14 +259,14 @@ void DS1302_Init(void)
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(DS1302_GPIO, &GPIO_InitStructure);
 	
-	DS1302_WriteByte(DS1302_CHARGER, 0x00);			// Отключить Trickle Charger
+	DS1302_WriteByte(DS1302_CHARGER, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Trickle Charger
 		
 	//	DS1302_RST = 0;
 	HAL_GPIO_WritePin(DS1302_GPIO, DS1302_RST,  GPIO_PIN_RESET);
 	//	DS1302_SCK = 0;
 	HAL_GPIO_WritePin(DS1302_GPIO, DS1302_SCLK,  GPIO_PIN_RESET);
 
-	delayUS_DWT(10); // Меньше 10 мкс делать не стоит.
+	delayUS_DWT(10); // РњРµРЅСЊС€Рµ 10 РјРєСЃ РґРµР»Р°С‚СЊ РЅРµ СЃС‚РѕРёС‚.
 	DS1302_ClockStart();
 }
 
@@ -274,7 +274,7 @@ void DS1302_Init(void)
 /* Writes 'val' to ram address 'addr' */
 /* Ram addresses range from 0 to 30 */
 void DS1302_WriteRam(uint8_t addr, uint8_t val) {
-	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// Отключить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 	if (addr >= RAMSIZE) {
 		return;
@@ -282,7 +282,7 @@ void DS1302_WriteRam(uint8_t addr, uint8_t val) {
 	
 	DS1302_WriteByte(DS1302_RAMSTART + (2 * addr), val);	
 	
-	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Включить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 }
 
@@ -368,50 +368,50 @@ void DS1302_WriteRamBurst(uint8_t len, uint8_t * buf) {
 }
 
 
-//Запуск часов.
-//Изначально DS1302 в режиме HALT (остановлена, режим энергосбережения).
-//Чтоб начался отсчет времени необходимо однократно выполнить эту функцию.
+//Р—Р°РїСѓСЃРє С‡Р°СЃРѕРІ.
+//РР·РЅР°С‡Р°Р»СЊРЅРѕ DS1302 РІ СЂРµР¶РёРјРµ HALT (РѕСЃС‚Р°РЅРѕРІР»РµРЅР°, СЂРµР¶РёРј СЌРЅРµСЂРіРѕСЃР±РµСЂРµР¶РµРЅРёСЏ).
+//Р§С‚РѕР± РЅР°С‡Р°Р»СЃСЏ РѕС‚СЃС‡РµС‚ РІСЂРµРјРµРЅРё РЅРµРѕР±С…РѕРґРёРјРѕ РѕРґРЅРѕРєСЂР°С‚РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ.
 void DS1302_ClockStart(void)
 {
 	uint8_t buf = 0x00;
 
-	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// Отключить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 
-	buf = DS1302_ReadByte(DS1302_SEC) & 0x7F;		// Записываем в 8 бит 0. При этом сохраняем установленное значение секунд.
+	buf = DS1302_ReadByte(DS1302_SEC) & 0x7F;		// Р—Р°РїРёСЃС‹РІР°РµРј РІ 8 Р±РёС‚ 0. РџСЂРё СЌС‚РѕРј СЃРѕС…СЂР°РЅСЏРµРј СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ СЃРµРєСѓРЅРґ.
 	DS1302_WriteByte(DS1302_SEC, buf);
 
-	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Включить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 }
 
 
-//Остановка часов.
-//Для включени режима HALT (энергосбережения). Наврядли эта функция вообще пригодится :)
+//РћСЃС‚Р°РЅРѕРІРєР° С‡Р°СЃРѕРІ.
+//Р”Р»СЏ РІРєР»СЋС‡РµРЅРё СЂРµР¶РёРјР° HALT (СЌРЅРµСЂРіРѕСЃР±РµСЂРµР¶РµРЅРёСЏ). РќР°РІСЂСЏРґР»Рё СЌС‚Р° С„СѓРЅРєС†РёСЏ РІРѕРѕР±С‰Рµ РїСЂРёРіРѕРґРёС‚СЃСЏ :)
 void DS1302_ClockStop(void)
 {
 	uint8_t buf = 0x00;
 
-	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// Отключить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 
-	buf = DS1302_ReadByte(DS1302_SEC) | 0x80;		// Записываем в 8 бит 1. При этом сохраняем установленное значение секунд.
+	buf = DS1302_ReadByte(DS1302_SEC) | 0x80;		// Р—Р°РїРёСЃС‹РІР°РµРј РІ 8 Р±РёС‚ 1. РџСЂРё СЌС‚РѕРј СЃРѕС…СЂР°РЅСЏРµРј СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ СЃРµРєСѓРЅРґ.
 	DS1302_WriteByte(DS1302_SEC, buf);
 
-	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Включить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 }
 
 
-//Сброс часов
-//Записывает 0 во все регистры часов (с 80h по 8Ch включительно) и переводит DS1302 в режим HALT (энергосбережения).
-//Для запуска часов используй функцию DS1302_ClockStart();
+//РЎР±СЂРѕСЃ С‡Р°СЃРѕРІ
+//Р—Р°РїРёСЃС‹РІР°РµС‚ 0 РІРѕ РІСЃРµ СЂРµРіРёСЃС‚СЂС‹ С‡Р°СЃРѕРІ (СЃ 80h РїРѕ 8Ch РІРєР»СЋС‡РёС‚РµР»СЊРЅРѕ) Рё РїРµСЂРµРІРѕРґРёС‚ DS1302 РІ СЂРµР¶РёРј HALT (СЌРЅРµСЂРіРѕСЃР±РµСЂРµР¶РµРЅРёСЏ).
+//Р”Р»СЏ Р·Р°РїСѓСЃРєР° С‡Р°СЃРѕРІ РёСЃРїРѕР»СЊР·СѓР№ С„СѓРЅРєС†РёСЋ DS1302_ClockStart();
 void DS1302_ClockClear(void)
 {
-	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// Отключить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x00);			// РћС‚РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 
-	DS1302_WriteByte(DS1302_SEC, 0x80);				//Сброс секунд и переход в режим HALT
+	DS1302_WriteByte(DS1302_SEC, 0x80);				//РЎР±СЂРѕСЃ СЃРµРєСѓРЅРґ Рё РїРµСЂРµС…РѕРґ РІ СЂРµР¶РёРј HALT
 	DS1302_WriteByte(DS1302_MIN, 0x00);
 	DS1302_WriteByte(DS1302_HOUR, 0x00);
 	DS1302_WriteByte(DS1302_DATE, 0x00);
@@ -419,6 +419,6 @@ void DS1302_ClockClear(void)
 	DS1302_WriteByte(DS1302_DAY, 0x00);
 	DS1302_WriteByte(DS1302_YEAR, 0x00);
 
-	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Включить защиту от записи
+	DS1302_WriteByte(DS1302_CONTROL, 0x80);			// Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ РѕС‚ Р·Р°РїРёСЃРё
 	delayUS_DWT(1);
 }
