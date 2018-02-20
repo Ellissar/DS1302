@@ -6,13 +6,12 @@
 Я добавил несколько изменений:
 1. Добавил 3 новых функции:
 
-   //Запуск часов.  
-   void DS1302_ClockStart(void);  
-   //Остановка часов.
-   void DS1302_ClockStop(void);
-
-//Сброс часов
-void DS1302_ClockClear(void);
+//Запуск часов.  
+void DS1302_ClockStart(void);  
+//Остановка часов.  
+void DS1302_ClockStop(void);  
+//Сброс часов  
+void DS1302_ClockClear(void);  
 
 2. В функции DS1302_Init() добавил вызов функции DS1302_ClockStart() чтоб часы начали (продолжили) отсчет времени.
 3. Вынел функцию delayUS_DWT в отдельный файл.
